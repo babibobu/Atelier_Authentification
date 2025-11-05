@@ -1,32 +1,42 @@
 <?php
-// Démarre la session
 session_start();
 
-// Vérifier si l'utilisateur est déjà connecté
-if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-    header('Location: page_admin.php'); // Si l'utilisateur s'est déjà connecté alors il sera automatiquement redirigé vers la page protected.php
+// Si un cookie + une session existent et correspondent, on redirige l'utilisateur vers la bonne page
+if (isset($_COOKIE['authToken']) && isset($_SESSION['authToken']) && $_COOKIE['authToken'] === $_SESSION['authToken']) {
+    if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+        header('Location: page_admin.php');
+    } elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
+        header('Location: page_user.php');
+    }
     exit();
 }
 
-// Gérer le formulaire de connexion
+// Gestion du formulaire de connexion
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Vérification simple des identifiants (à améliorer avec une base de données)
+    // Vérification des identifiants
     if ($username === 'admin' && $password === 'secret') {
-        // Stocker les informations utilisateur dans la session
-        $_SESSION['loggedin'] = true;
-        $_SESSION['username'] = $username;
-
-        // Rediriger vers la page protégée
+        $token = bin2hex(random_bytes(16));
+        $_SESSION['authToken'] = $token;
+        $_SESSION['role'] = 'admin';
+        setcookie('authToken', $token, time() + 60, '/', '', false, true);
         header('Location: page_admin.php');
+        exit();
+    } elseif ($username === 'user' && $password === 'utilisateur') {
+        $token = bin2hex(random_bytes(16));
+        $_SESSION['authToken'] = $token;
+        $_SESSION['role'] = 'user';
+        setcookie('authToken', $token, time() + 60, '/', '', false, true);
+        header('Location: page_user.php');
         exit();
     } else {
         $error = "Nom d'utilisateur ou mot de passe incorrect.";
     }
 }
 ?>
+    
 
 <!DOCTYPE html>
 <html lang="fr">
