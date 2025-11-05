@@ -1,11 +1,12 @@
 <?php
 session_start();
 
-if (!isset($_COOKIE['authToken']) || !isset($_SESSION['authToken']) || $_COOKIE['authToken'] !== $_SESSION['authToken']) {
+if (!isset($_COOKIE['authToken']) || !isset($_SESSION['authToken']) || $_COOKIE['authToken'] !== $_SESSION['authToken'] || $_SESSION['role'] !== 'admin') {
     header('Location: index.php');
     exit();
 }
 ?>
+    
 
     
 
