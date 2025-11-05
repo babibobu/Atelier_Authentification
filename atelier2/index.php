@@ -1,40 +1,43 @@
 <?php
-// Démarrer une session utilisateur qui sera en mesure de pouvoir gérer les Cookies
 session_start();
 
-// Vérifier si l'utilisateur est déjà en possession d'un cookie valide (cookie authToken ayant le contenu 12345)
-// Si l'utilisateur possède déjà ce cookie, il sera redirigé automatiquement vers la page home.php
-// Dans le cas contraire il devra s'identifier.
+// Si un cookie + session existent et correspondent, rediriger selon le role
 if (isset($_COOKIE['authToken']) && isset($_SESSION['authToken']) && $_COOKIE['authToken'] === $_SESSION['authToken']) {
-    header('Location: page_admin.php');
+    if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+        header('Location: page_admin.php');
+    } elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
+        header('Location: page_user.php');
+    } else {
+        // pas de role → on détruit et on reste sur la page de login
+        session_destroy();
+    }
     exit();
 }
 
-
-// Gérer la soumission du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    // Vérification simple des identifiants
     if ($username === 'admin' && $password === 'secret') {
-        // 🔒 Génération d’un jeton unique pour cet utilisateur
         $token = bin2hex(random_bytes(16));
-
-        // Stockage du jeton côté serveur (dans la session)
         $_SESSION['authToken'] = $token;
-
-        // Création du cookie avec le jeton unique
+        $_SESSION['role'] = 'admin';
         setcookie('authToken', $token, time() + 60, '/', '', false, true);
-
-        // Redirection vers la page admin
         header('Location: page_admin.php');
+        exit();
+    } elseif ($username === 'user' && $password === 'utilisateur') {
+        $token = bin2hex(random_bytes(16));
+        $_SESSION['authToken'] = $token;
+        $_SESSION['role'] = 'user';
+        setcookie('authToken', $token, time() + 60, '/', '', false, true);
+        header('Location: page_user.php');
         exit();
     } else {
         $error = "Nom d'utilisateur ou mot de passe incorrect.";
     }
 }
 ?>
+    
     
 
 <!DOCTYPE html>
