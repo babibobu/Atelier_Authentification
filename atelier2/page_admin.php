@@ -1,14 +1,12 @@
 <?php
-// Démarrer la session
 session_start();
 
-// Vérifier si l'utilisateur est bien en possession d'un cookie valide
-// Dans le cas contraire il sera redirigé vers la page d'accueil de connexion
-if (!isset($_COOKIE['authToken']) || $_COOKIE['authToken'] !== '12345') {
-    header('Location: index.php');
+if (!isset($_COOKIE['authToken']) || !isset($_SESSION['authToken']) || $_COOKIE['authToken'] !== $_SESSION['authToken']) {
+    header('Location: login.php');
     exit();
 }
 ?>
+    
 
 <!DOCTYPE html>
 <html lang="fr">
