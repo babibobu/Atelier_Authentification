@@ -2,10 +2,11 @@
 session_start();
 
 if (!isset($_COOKIE['authToken']) || !isset($_SESSION['authToken']) || $_COOKIE['authToken'] !== $_SESSION['authToken']) {
-    header('Location: login.php');
+    header('Location: index.php');
     exit();
 }
 ?>
+
     
 
 <!DOCTYPE html>
