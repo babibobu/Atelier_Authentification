@@ -1,6 +1,14 @@
 <?php
 session_start();
 
+// --- Gestion du compteur de visites avec un cookie ---
+if (isset($_COOKIE['visites'])) {
+    $visites = (int)$_COOKIE['visites'] + 1;
+} else {
+    $visites = 1;
+}
+
+
 // Si un cookie + session existent et correspondent, rediriger selon le role
 if (isset($_COOKIE['authToken']) && isset($_SESSION['authToken']) && $_COOKIE['authToken'] === $_SESSION['authToken']) {
     if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
