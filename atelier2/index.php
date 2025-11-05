@@ -9,31 +9,12 @@ if (isset($_COOKIE['authToken']) && $_COOKIE['authToken'] === '12345') {
     header('Location: page_admin.php');
     exit();
 }
+
 // Gérer la soumission du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Vérification simple des identifiants
-    if ($username === 'admin' && $password === 'secret') {
-        // 🔒 Génération d’un jeton unique pour cet utilisateur
-        $token = bin2hex(random_bytes(16));
-
-        // Stockage du jeton côté serveur (dans la session)
-        $_SESSION['authToken'] = $token;
-
-        // Création du cookie avec le jeton unique
-        setcookie('authToken', $token, time() + 3600, '/', '', false, true);
-
-        // Redirection vers la page admin
-        header('Location: page_admin.php');
-        exit();
-    } else {
-        $error = "Nom d'utilisateur ou mot de passe incorrect.";
-    }
-}
-?>
-    
     // Vérification simple du username et de son password.
     // Si ok alors on initialise le cookie sur le poste de l'utilisateur 
     if ($username === 'admin' && $password === 'secret') {
