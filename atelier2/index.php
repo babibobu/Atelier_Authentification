@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['authToken'] = $token;
 
         // Création du cookie avec le jeton unique
-        setcookie('authToken', $token, time() + 3600, '/', '', false, true);
+        setcookie('authToken', $token, time() + 60, '/', '', false, true);
 
         // Redirection vers la page admin
         header('Location: page_admin.php');
